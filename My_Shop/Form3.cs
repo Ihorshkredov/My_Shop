@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using My_Shop.Servises;
 
 namespace My_Shop
 {
@@ -21,25 +22,14 @@ namespace My_Shop
 
         private void button1_Click(object sender, EventArgs e)
         {
+            dataGridFound.DataSource = null;
 
-            if (txtBoxLookUp.Text != string.Empty)
-            {
-                using (var database = new MyShopContext())
-                {
-                    var request = database.Products.Where(p => p.Name.ToLower().Contains(txtBoxLookUp.Text.ToLower())).ToList();
+            WorkServise servise = new WorkServise();
 
-                    if (request.Count > 0)
-                    {
-                        dataGridFound.DataSource = request;
-                    }
-                    else 
-                    {
-                        MessageBox.Show("No such products found", "Warning");
-                    }
+            List<ProductModel> foundProducts = servise.GetModelByName(txtBoxLookUp.Text);
 
-                }
-
-            }
+            dataGridFound.DataSource = foundProducts;
+       
         }
     }
 }

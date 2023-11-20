@@ -1,11 +1,13 @@
 using My_Shop.Models;
 using System.ComponentModel;
+using My_Shop.Servises;
 
 namespace My_Shop
 {
     public partial class Form1 : Form  //Main Form
     {
-        BindingList<Product> buyPacage = new BindingList<Product>();
+        List<ProductModel> buyPacage = new List<ProductModel>();
+
         public decimal sum;
 
         public Form1()
@@ -20,106 +22,65 @@ namespace My_Shop
 
         private void btnCheck_Click(object sender, EventArgs e)
         {
-            Form3 lookUpForm = new Form3();
-            lookUpForm.Show();
+           new Form3().ShowDialog();
         }
 
         private void button1_Click(object sender, EventArgs e) //Administarte button
         {
             if (txtBoxAdminPass.Text == "123")
-            {
-                txtBoxAdminPass.Text = string.Empty;
-                Form2 adminForm = new Form2();
-                adminForm.Show();
+            {   txtBoxAdminPass.Text = string.Empty;
+                new Form2().ShowDialog();
             }
             else
-                MessageBox.Show("You mast enter Administrator Password", "Warning");
+                MessageBox.Show(ShowInfo.ShowNeedAdminPass());
         }
 
         private void btnADD_Click(object sender, EventArgs e)
         {
-            if (txtBoxEnterCode.Text != string.Empty)
+            dataGridView1.DataSource = null;
+
+            WorkServise service = new WorkServise();
+            if (int.TryParse(txtBoxQty.Text,out int result))
             {
-
-                using (MyShopContext dataBase = new MyShopContext())
-                {
-                    var product = dataBase.Products.Where(p => p.Code.Contains(txtBoxEnterCode.Text)).FirstOrDefault();
-                    if (product != null && product.Quantity > int.Parse(txtBoxQty.Text))
-                    {
-                        var productForBuy = new Product()
-                        {
-                            Code = product.Code,
-                            Name = product.Name,
-                            Id = product.Id,
-                            Price = product.Price,
-                            Quantity = int.Parse(txtBoxQty.Text)
-                        };
-
-                        buyPacage.Add(productForBuy);
-
-                        foreach (Product item in buyPacage)
-                        {
-                            sum = sum + (int)item.Quantity * item.Price;
-
-                        }
-                        lblSumValue.Text = sum.ToString();
-                        dataGridView1.DataSource = buyPacage;
-                        dataGridView1.Update();
-                        txtBoxEnterCode.Text = string.Empty;
-                        txtBoxQty.Text = string.Empty;
-
-                    }
-                    else
-                    {
-                        MessageBox.Show("There no such amount of products on storage");
-                    }
-                }
+               service.AddToPackage(buyPacage, txtBoxEnterCode.Text, result);
+                lblSumValue.Text = service.GetTotalSum(buyPacage).ToString();
+                dataGridView1.DataSource = buyPacage;
+                ClearEntryFields();
             }
             else
             {
-                MessageBox.Show("Please enter correct product code and qty into the CODE entry");
+                MessageBox.Show(ShowInfo.WarningNotCorrectInput());
             }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (buyPacage.Count > 0)
+                if (buyPacage.Any())
                 {
                     buyPacage.Clear();
                 }
-                dataGridView1.DataSource = buyPacage;
-                sum = 0;
+                ClearEntryFields();
+                dataGridView1.DataSource = null;
                 lblSumValue.Text = string.Empty;
-
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
         }
 
         private void btnBuy_Click(object sender, EventArgs e)
         {
-            if (buyPacage.Count > 0)
-            {
-                using (MyShopContext dataBase = new MyShopContext())
-                {
-                    
-                    foreach (Product item in buyPacage) 
-                    {
-                        var product = dataBase.Products.Where(p => p.Code == item.Code).FirstOrDefault();
-                        product.Quantity -= item.Quantity; 
-                    }
-                    dataBase.SaveChanges();
-                }
-            }
-            buyPacage.Clear();
+            WorkServise servise = new WorkServise();
+            servise.BuyOrderFromShop( buyPacage );
+            
             lblSumValue.Text = string.Empty;
-            MessageBox.Show("Success. Thank you for your buings.");
+            dataGridView1.DataSource = null;
+            ClearEntryFields();  
+            MessageBox.Show(ShowInfo.ShowSuccessBuy());
+            dataGridView1.DataSource = buyPacage;
 
+        }
+
+        private void ClearEntryFields()
+        {
+            txtBoxQty.Text = string.Empty;
+            txtBoxEnterCode.Text = string.Empty;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace My_Shop.Models;
+namespace My_Shop.Entities;
 
 public partial class Product
 {
