@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using My_Shop.Entities;
 
 namespace My_Shop.Models;
 
