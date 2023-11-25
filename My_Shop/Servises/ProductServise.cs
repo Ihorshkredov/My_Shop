@@ -8,11 +8,11 @@ using My_Shop.Models;
 
 namespace My_Shop.Servises
 {
-	public class WorkServise
+	public class ProductServise
 	{
         private readonly MyShopContext whContext;
 
-        public WorkServise()
+        public ProductServise()
         {
              whContext = new MyShopContext();
         }
@@ -61,29 +61,29 @@ namespace My_Shop.Servises
                 }
                 else
                 {
-                    MessageBox.Show(ShowInfo.ShowNoSuchAmount());
+                    MessageBox.Show(MessageInfo.ShowNoSuchAmountMessage);
                 }
                 
             }
             else
             {
-                ShowInfo.WarningNotCorrectInput();
+               MessageBox.Show( MessageInfo.WarningNotCorrectInputMessage);
             }
             return order;
         }
 
-        public double GetTotalSum(List<ProductModel> order)
-        {   
-            double sum = 0;
-            if (order.Any())
-            {
-                foreach (var item in order)
-                {
-                    sum += (int)item.Quantity * (double)item.Price;
-                }
-            }
-            return sum;
-        }
+        //public double GetTotalSum(List<ProductModel> order)
+        //{   
+        //    double sum = 0;
+        //    if (order.Any())
+        //    {
+        //        foreach (var item in order)
+        //        {
+        //            sum += (int)item.Quantity * (double)item.Price;
+        //        }
+        //    }
+        //    return sum;
+        //}
 
         public void BuyOrderFromShop(List<ProductModel> order)
         {

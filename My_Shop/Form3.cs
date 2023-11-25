@@ -24,7 +24,7 @@ namespace My_Shop
         {
             dataGridFound.DataSource = null;
 
-            WorkServise servise = new WorkServise();
+            ProductServise servise = new ProductServise();
 
             List<ProductModel> foundProducts = servise.GetModelByName(txtBoxLookUp.Text);
 

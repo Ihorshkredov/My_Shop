@@ -7,22 +7,23 @@ namespace My_Shop
 {
     public partial class Form2 : Form //Administrative form
     {
-        WorkServise service = new WorkServise();
+        private ProductServise service; 
 
         public Form2()
         {
             InitializeComponent();
+            service = new ProductServise();
         }
 
         private void btnADD_Click(object sender, EventArgs e)
         {
             dataGridView1.DataSource = null;
-            MessageBox.Show(ShowInfo.WarnAboutProductAdd(txtBoxCode.Text, txtBoxName.Text,
+			MessageBox.Show(MessageInfo.ShowWarnAboutProductAdd(txtBoxCode.Text, txtBoxName.Text,
                                                         txtBoxPrice.Text, txtBoxQuantity.Text));
             bool success = service.AddProductToStorage(txtBoxCode.Text, txtBoxName.Text,
                                         txtBoxPrice.Text, txtBoxQuantity.Text);
 
-            MessageBox.Show(success ? ShowInfo.ShowSucces() : ShowInfo.ShowFail());
+            MessageBox.Show(success ? MessageInfo.ShowSuccesMessage : MessageInfo.ShowFailMessage);
             dataGridView1.DataSource = service.ShowProductsInStorage();
             CleanForm();
 
@@ -31,11 +32,11 @@ namespace My_Shop
         private void btnRem_Click(object sender, EventArgs e)
         {
             dataGridView1.DataSource = null;
-            MessageBox.Show(ShowInfo.WarnAboutProductDelete(txtBoxCode.Text, txtBoxName.Text,
+            MessageBox.Show(MessageInfo.ShowWarnAboutProductDelete(txtBoxCode.Text, txtBoxName.Text,
                                                         txtBoxPrice.Text, txtBoxQuantity.Text));
             bool success = service.RemoveProductFromStorage(txtBoxCode.Text);
 
-            MessageBox.Show(success ? ShowInfo.ShowSucces() : ShowInfo.ShowFail());
+            MessageBox.Show(success ? MessageInfo.ShowSuccesMessage : MessageInfo.ShowFailMessage);
             dataGridView1.DataSource = service.ShowProductsInStorage();
             CleanForm();
         }

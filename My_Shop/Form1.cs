@@ -6,13 +6,14 @@ namespace My_Shop
 {
     public partial class Form1 : Form  //Main Form
     {
-        List<ProductModel> buyPacage = new List<ProductModel>();
+        List<ProductModel> buyPacage; 
 
         public decimal sum;
 
         public Form1()
         {
             InitializeComponent();
+            buyPacage = new List<ProductModel>();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -28,28 +29,30 @@ namespace My_Shop
         private void button1_Click(object sender, EventArgs e) //Administarte button
         {
             if (txtBoxAdminPass.Text == "123")
-            {   txtBoxAdminPass.Text = string.Empty;
+            {   
+                txtBoxAdminPass.Text = string.Empty;
                 new Form2().ShowDialog();
             }
             else
-                MessageBox.Show(ShowInfo.ShowNeedAdminPass());
+                MessageBox.Show(MessageInfo.ShowNeedAdminPassMessage);
         }
 
         private void btnADD_Click(object sender, EventArgs e)
         {
             dataGridView1.DataSource = null;
 
-            WorkServise service = new WorkServise();
+            ProductServise service = new ProductServise();
+
             if (int.TryParse(txtBoxQty.Text,out int result))
             {
-               service.AddToPackage(buyPacage, txtBoxEnterCode.Text, result);
-                lblSumValue.Text = service.GetTotalSum(buyPacage).ToString();
+                service.AddToPackage(buyPacage, txtBoxEnterCode.Text, result);
+                lblSumValue.Text = DisplayTotalSum(buyPacage).ToString();
                 dataGridView1.DataSource = buyPacage;
                 ClearEntryFields();
             }
             else
             {
-                MessageBox.Show(ShowInfo.WarningNotCorrectInput());
+                MessageBox.Show(MessageInfo.WarningNotCorrectInputMessage);
             }
         }
 
@@ -59,6 +62,7 @@ namespace My_Shop
                 {
                     buyPacage.Clear();
                 }
+
                 ClearEntryFields();
                 dataGridView1.DataSource = null;
                 lblSumValue.Text = string.Empty;
@@ -66,13 +70,14 @@ namespace My_Shop
 
         private void btnBuy_Click(object sender, EventArgs e)
         {
-            WorkServise servise = new WorkServise();
+            ProductServise servise = new ProductServise();
             servise.BuyOrderFromShop( buyPacage );
             
             lblSumValue.Text = string.Empty;
             dataGridView1.DataSource = null;
-            ClearEntryFields();  
-            MessageBox.Show(ShowInfo.ShowSuccessBuy());
+           
+            ClearEntryFields(); 
+            MessageBox.Show(MessageInfo.ShowSuccessBuyMessage);
             dataGridView1.DataSource = buyPacage;
 
         }
@@ -82,5 +87,19 @@ namespace My_Shop
             txtBoxQty.Text = string.Empty;
             txtBoxEnterCode.Text = string.Empty;
         }
+
+        private double DisplayTotalSum( List<ProductModel> buyPakcage)
+        {
+			double sum = 0;
+			if (buyPacage.Any())
+			{
+				foreach (var item in buyPacage)
+				{
+					sum += (int)item.Quantity * (double)item.Price;
+				}
+			}
+			return sum;
+
+		}
     }
 }
