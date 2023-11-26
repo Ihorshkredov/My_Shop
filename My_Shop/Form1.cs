@@ -1,18 +1,18 @@
 using My_Shop.Models;
 using System.ComponentModel;
-using My_Shop.Servises;
+using My_Shop.Services;
+using My_Shop.Helpers;
 
 namespace My_Shop
 {
-    public partial class Form1 : Form  //Main Form
+    public partial class Form1 : Form 
     {
-        List<ProductModel> buyPacage = new List<ProductModel>();
-
-        public decimal sum;
+        private  List<ProductModel> buyPacage; 
 
         public Form1()
         {
             InitializeComponent();
+            buyPacage = new List<ProductModel>();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -25,31 +25,46 @@ namespace My_Shop
            new Form3().ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e) //Administarte button
+        private void button1_Click(object sender, EventArgs e) 
         {
             if (txtBoxAdminPass.Text == "123")
-            {   txtBoxAdminPass.Text = string.Empty;
+            {   
+                txtBoxAdminPass.Text = string.Empty;
                 new Form2().ShowDialog();
             }
             else
-                MessageBox.Show(ShowInfo.ShowNeedAdminPass());
+                MessageBox.Show(MessageInfo.ShowNeedAdminPassMessage);
         }
 
         private void btnADD_Click(object sender, EventArgs e)
         {
             dataGridView1.DataSource = null;
 
-            WorkServise service = new WorkServise();
+            ProductService service = new ProductService();
+
             if (int.TryParse(txtBoxQty.Text,out int result))
             {
-               service.AddToPackage(buyPacage, txtBoxEnterCode.Text, result);
-                lblSumValue.Text = service.GetTotalSum(buyPacage).ToString();
+                service.AddProductToPackage(buyPacage, txtBoxEnterCode.Text, result, out int returnCode);
+
+                switch (returnCode)
+                {
+                    case 1:
+                        MessageBox.Show(MessageInfo.ShowNoSuchAmountMessage);
+                        break;
+                    case 2:
+                        MessageBox.Show(MessageInfo.WarningNotCorrectInputMessage);
+                        break;
+                    default:
+                        break;
+                }
+
+                lblSumValue.Text = buyPacage.Sum( p => p.Price * p.Quantity).ToString();
                 dataGridView1.DataSource = buyPacage;
                 ClearEntryFields();
             }
             else
             {
-                MessageBox.Show(ShowInfo.WarningNotCorrectInput());
+                MessageBox.Show(MessageInfo.WarningNotCorrectInputMessage);
             }
         }
 
@@ -59,6 +74,7 @@ namespace My_Shop
                 {
                     buyPacage.Clear();
                 }
+
                 ClearEntryFields();
                 dataGridView1.DataSource = null;
                 lblSumValue.Text = string.Empty;
@@ -66,13 +82,14 @@ namespace My_Shop
 
         private void btnBuy_Click(object sender, EventArgs e)
         {
-            WorkServise servise = new WorkServise();
+            ProductService servise = new ProductService();
             servise.BuyOrderFromShop( buyPacage );
             
             lblSumValue.Text = string.Empty;
             dataGridView1.DataSource = null;
-            ClearEntryFields();  
-            MessageBox.Show(ShowInfo.ShowSuccessBuy());
+           
+            ClearEntryFields(); 
+            MessageBox.Show(MessageInfo.ShowSuccessBuyMessage);
             dataGridView1.DataSource = buyPacage;
 
         }
@@ -82,5 +99,7 @@ namespace My_Shop
             txtBoxQty.Text = string.Empty;
             txtBoxEnterCode.Text = string.Empty;
         }
+
+  
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using My_Shop.Servises;
+using My_Shop.Services;
 
 namespace My_Shop
 {
@@ -24,9 +24,9 @@ namespace My_Shop
         {
             dataGridFound.DataSource = null;
 
-            WorkServise servise = new WorkServise();
+            ProductService servise = new ProductService();
 
-            List<ProductModel> foundProducts = servise.GetModelByName(txtBoxLookUp.Text);
+            List<ProductModel> foundProducts = servise.GetProductByName(txtBoxLookUp.Text);
 
             dataGridFound.DataSource = foundProducts;
        

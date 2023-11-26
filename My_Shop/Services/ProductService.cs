@@ -4,26 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using My_Shop.Entities;
+using My_Shop.Helpers;
 using My_Shop.Models;
 
-namespace My_Shop.Servises
+namespace My_Shop.Services
 {
-	public class WorkServise
+    public class ProductService
 	{
         private readonly MyShopContext whContext;
 
-        public WorkServise()
+        public ProductService()
         {
              whContext = new MyShopContext();
         }
 
-        public List<ProductModel> GetModelByName(string name)
+        public List<ProductModel> GetProductByName(string name)
         {
             List<ProductModel> products = new List<ProductModel>();
             
             if (name != string.Empty)
             {
-			    var request = whContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToList();
+			    var request = whContext.Products.Where(p => p.Name.ToUpper().Contains(name.ToUpper())).ToList();
                 foreach (var product in request) 
                 {
                     products.Add( new ProductModel() 
@@ -39,7 +40,7 @@ namespace My_Shop.Servises
 			return products;
 		}
 
-        public List<ProductModel> AddToPackage(List<ProductModel> order,string code, int quantity)
+        public List<ProductModel> AddProductToPackage(List<ProductModel> order,string code, int quantity, out int returnCode)
         { 
 
             if (code != string.Empty && quantity > 0)
@@ -55,35 +56,24 @@ namespace My_Shop.Servises
                         Quantity = quantity,
                         Price = product.Price
                     };
-
+                    returnCode = 0; 
                     order.Add( productForBuy ); 
                     
                 }
                 else
                 {
-                    MessageBox.Show(ShowInfo.ShowNoSuchAmount());
+                    returnCode = 1;
                 }
                 
             }
             else
-            {
-                ShowInfo.WarningNotCorrectInput();
+            {               
+                returnCode = 2;
             }
+
             return order;
         }
 
-        public double GetTotalSum(List<ProductModel> order)
-        {   
-            double sum = 0;
-            if (order.Any())
-            {
-                foreach (var item in order)
-                {
-                    sum += (int)item.Quantity * (double)item.Price;
-                }
-            }
-            return sum;
-        }
 
         public void BuyOrderFromShop(List<ProductModel> order)
         {
@@ -94,7 +84,11 @@ namespace My_Shop.Servises
                     foreach (var item in order)
                     {
                         var product = whContext.Products.Where(p => p.Code == item.Code).FirstOrDefault();
-                        product.Quantity -= item.Quantity;
+                        if (product != null)
+                        {
+                            product.Quantity -= item.Quantity;
+                        }
+                        else continue;
                     } 
 
                     whContext.SaveChanges();
@@ -109,10 +103,10 @@ namespace My_Shop.Servises
 
         public bool AddProductToStorage( string code, string name, string price , string quantity)
         { 
-            if (!string.IsNullOrEmpty(code) 
-                && !string.IsNullOrEmpty(name)
-                && !string.IsNullOrEmpty(price)
-                && !string.IsNullOrEmpty(quantity)) 
+            if (!string.IsNullOrWhiteSpace(code) 
+                && !string.IsNullOrWhiteSpace(name)
+                && !string.IsNullOrWhiteSpace(price)
+                && !string.IsNullOrWhiteSpace(quantity)) 
             {
                 bool priceOk = decimal.TryParse(price, out decimal priceParsed);
                 bool quantityOk = int.TryParse(quantity, out int quantityParsed);
