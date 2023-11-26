@@ -1,14 +1,15 @@
 using My_Shop.Models;
 using System.ComponentModel;
-using My_Shop.Servises;
+using My_Shop.Services;
+using My_Shop.Helpers;
 
 namespace My_Shop
 {
     public partial class Form1 : Form  //Main Form
     {
-        List<ProductModel> buyPacage; 
+        private  List<ProductModel> buyPacage; 
 
-        public decimal sum;
+        //public decimal sum;
 
         public Form1()
         {
@@ -41,12 +42,12 @@ namespace My_Shop
         {
             dataGridView1.DataSource = null;
 
-            ProductServise service = new ProductServise();
+            ProductService service = new ProductService();
 
             if (int.TryParse(txtBoxQty.Text,out int result))
             {
-                service.AddToPackage(buyPacage, txtBoxEnterCode.Text, result);
-                lblSumValue.Text = DisplayTotalSum(buyPacage).ToString();
+                service.AddProductToPackage(buyPacage, txtBoxEnterCode.Text, result);
+                lblSumValue.Text = TotalSum.GetSum(buyPacage).ToString();
                 dataGridView1.DataSource = buyPacage;
                 ClearEntryFields();
             }
@@ -70,7 +71,7 @@ namespace My_Shop
 
         private void btnBuy_Click(object sender, EventArgs e)
         {
-            ProductServise servise = new ProductServise();
+            ProductService servise = new ProductService();
             servise.BuyOrderFromShop( buyPacage );
             
             lblSumValue.Text = string.Empty;
@@ -88,18 +89,18 @@ namespace My_Shop
             txtBoxEnterCode.Text = string.Empty;
         }
 
-        private double DisplayTotalSum( List<ProductModel> buyPakcage)
-        {
-			double sum = 0;
-			if (buyPacage.Any())
-			{
-				foreach (var item in buyPacage)
-				{
-					sum += (int)item.Quantity * (double)item.Price;
-				}
-			}
-			return sum;
+  //      private double DisplayTotalSum( List<ProductModel> buyPakcage)
+  //      {
+		//	double sum = 0;
+		//	if (buyPacage.Any())
+		//	{
+		//		foreach (var item in buyPacage)
+		//		{
+		//			sum += (int)item.Quantity * (double)item.Price;
+		//		}
+		//	}
+		//	return sum;
 
-		}
+		//}
     }
 }

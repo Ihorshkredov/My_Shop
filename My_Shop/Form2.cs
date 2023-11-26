@@ -1,18 +1,18 @@
 ﻿
-using My_Shop.Models;
-using My_Shop.Servises;
+using My_Shop.Helpers;
+using My_Shop.Services;
 using System.Data;
 
 namespace My_Shop
 {
     public partial class Form2 : Form //Administrative form
     {
-        private ProductServise service; 
+        private ProductService service; 
 
         public Form2()
         {
             InitializeComponent();
-            service = new ProductServise();
+            service = new ProductService();
         }
 
         private void btnADD_Click(object sender, EventArgs e)

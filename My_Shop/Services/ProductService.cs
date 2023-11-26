@@ -4,26 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using My_Shop.Entities;
+using My_Shop.Helpers;
 using My_Shop.Models;
 
-namespace My_Shop.Servises
+namespace My_Shop.Services
 {
-	public class ProductServise
+    public class ProductService
 	{
         private readonly MyShopContext whContext;
 
-        public ProductServise()
+        public ProductService()
         {
              whContext = new MyShopContext();
         }
 
-        public List<ProductModel> GetModelByName(string name)
+        public List<ProductModel> GetProductByName(string name)
         {
             List<ProductModel> products = new List<ProductModel>();
             
             if (name != string.Empty)
             {
-			    var request = whContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToList();
+			    var request = whContext.Products.Where(p => p.Name.ToUpper().Contains(name.ToUpper())).ToList();
                 foreach (var product in request) 
                 {
                     products.Add( new ProductModel() 
@@ -39,7 +40,7 @@ namespace My_Shop.Servises
 			return products;
 		}
 
-        public List<ProductModel> AddToPackage(List<ProductModel> order,string code, int quantity)
+        public List<ProductModel> AddProductToPackage(List<ProductModel> order,string code, int quantity)
         { 
 
             if (code != string.Empty && quantity > 0)
@@ -72,18 +73,6 @@ namespace My_Shop.Servises
             return order;
         }
 
-        //public double GetTotalSum(List<ProductModel> order)
-        //{   
-        //    double sum = 0;
-        //    if (order.Any())
-        //    {
-        //        foreach (var item in order)
-        //        {
-        //            sum += (int)item.Quantity * (double)item.Price;
-        //        }
-        //    }
-        //    return sum;
-        //}
 
         public void BuyOrderFromShop(List<ProductModel> order)
         {
@@ -94,7 +83,11 @@ namespace My_Shop.Servises
                     foreach (var item in order)
                     {
                         var product = whContext.Products.Where(p => p.Code == item.Code).FirstOrDefault();
-                        product.Quantity -= item.Quantity;
+                        if (product != null)
+                        {
+                            product.Quantity -= item.Quantity;
+                        }
+                        else continue;
                     } 
 
                     whContext.SaveChanges();
