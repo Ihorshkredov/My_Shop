@@ -5,7 +5,7 @@ using System.Data;
 
 namespace My_Shop
 {
-    public partial class Form2 : Form //Administrative form
+    public partial class Form2 : Form 
     {
         private ProductService service; 
 

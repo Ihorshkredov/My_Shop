@@ -62,16 +62,15 @@ namespace My_Shop.Services
                 }
                 else
                 {
-                    //MessageBox.Show(MessageInfo.ShowNoSuchAmountMessage);
                     returnCode = 1;
                 }
                 
             }
             else
-            {
-               //MessageBox.Show( MessageInfo.WarningNotCorrectInputMessage);
+            {               
                 returnCode = 2;
             }
+
             return order;
         }
 
@@ -104,10 +103,10 @@ namespace My_Shop.Services
 
         public bool AddProductToStorage( string code, string name, string price , string quantity)
         { 
-            if (!string.IsNullOrEmpty(code) 
-                && !string.IsNullOrEmpty(name)
-                && !string.IsNullOrEmpty(price)
-                && !string.IsNullOrEmpty(quantity)) 
+            if (!string.IsNullOrWhiteSpace(code) 
+                && !string.IsNullOrWhiteSpace(name)
+                && !string.IsNullOrWhiteSpace(price)
+                && !string.IsNullOrWhiteSpace(quantity)) 
             {
                 bool priceOk = decimal.TryParse(price, out decimal priceParsed);
                 bool quantityOk = int.TryParse(quantity, out int quantityParsed);

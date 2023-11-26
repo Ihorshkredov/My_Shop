@@ -5,7 +5,7 @@ using My_Shop.Helpers;
 
 namespace My_Shop
 {
-    public partial class Form1 : Form  //Main Form
+    public partial class Form1 : Form 
     {
         private  List<ProductModel> buyPacage; 
 
@@ -25,7 +25,7 @@ namespace My_Shop
            new Form3().ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e) //Administarte button
+        private void button1_Click(object sender, EventArgs e) 
         {
             if (txtBoxAdminPass.Text == "123")
             {   
