@@ -9,8 +9,6 @@ namespace My_Shop
     {
         private  List<ProductModel> buyPacage; 
 
-        //public decimal sum;
-
         public Form1()
         {
             InitializeComponent();
@@ -89,18 +87,6 @@ namespace My_Shop
             txtBoxEnterCode.Text = string.Empty;
         }
 
-  //      private double DisplayTotalSum( List<ProductModel> buyPakcage)
-  //      {
-		//	double sum = 0;
-		//	if (buyPacage.Any())
-		//	{
-		//		foreach (var item in buyPacage)
-		//		{
-		//			sum += (int)item.Quantity * (double)item.Price;
-		//		}
-		//	}
-		//	return sum;
-
-		//}
+  
     }
 }
