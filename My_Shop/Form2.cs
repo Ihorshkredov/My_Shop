@@ -1,4 +1,4 @@
-﻿
+﻿using My_Shop.Models;
 using My_Shop.Helpers;
 using My_Shop.Services;
 using System.Data;
@@ -18,6 +18,7 @@ namespace My_Shop
         private void btnADD_Click(object sender, EventArgs e)
         {
             dataGridView1.DataSource = null;
+
 			MessageBox.Show(MessageInfo.ShowWarnAboutProductAdd(txtBoxCode.Text, txtBoxName.Text,
                                                         txtBoxPrice.Text, txtBoxQuantity.Text));
             bool success = service.AddProductToStorage(txtBoxCode.Text, txtBoxName.Text,

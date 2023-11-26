@@ -44,8 +44,21 @@ namespace My_Shop
 
             if (int.TryParse(txtBoxQty.Text,out int result))
             {
-                service.AddProductToPackage(buyPacage, txtBoxEnterCode.Text, result);
-                lblSumValue.Text = TotalSum.GetSum(buyPacage).ToString();
+                service.AddProductToPackage(buyPacage, txtBoxEnterCode.Text, result, out int returnCode);
+
+                switch (returnCode)
+                {
+                    case 1:
+                        MessageBox.Show(MessageInfo.ShowNoSuchAmountMessage);
+                        break;
+                    case 2:
+                        MessageBox.Show(MessageInfo.WarningNotCorrectInputMessage);
+                        break;
+                    default:
+                        break;
+                }
+
+                lblSumValue.Text = buyPacage.Sum( p => p.Price * p.Quantity).ToString();
                 dataGridView1.DataSource = buyPacage;
                 ClearEntryFields();
             }

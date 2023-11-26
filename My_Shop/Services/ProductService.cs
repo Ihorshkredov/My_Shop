@@ -40,7 +40,7 @@ namespace My_Shop.Services
 			return products;
 		}
 
-        public List<ProductModel> AddProductToPackage(List<ProductModel> order,string code, int quantity)
+        public List<ProductModel> AddProductToPackage(List<ProductModel> order,string code, int quantity, out int returnCode)
         { 
 
             if (code != string.Empty && quantity > 0)
@@ -56,19 +56,21 @@ namespace My_Shop.Services
                         Quantity = quantity,
                         Price = product.Price
                     };
-
+                    returnCode = 0; 
                     order.Add( productForBuy ); 
                     
                 }
                 else
                 {
-                    MessageBox.Show(MessageInfo.ShowNoSuchAmountMessage);
+                    //MessageBox.Show(MessageInfo.ShowNoSuchAmountMessage);
+                    returnCode = 1;
                 }
                 
             }
             else
             {
-               MessageBox.Show( MessageInfo.WarningNotCorrectInputMessage);
+               //MessageBox.Show( MessageInfo.WarningNotCorrectInputMessage);
+                returnCode = 2;
             }
             return order;
         }
